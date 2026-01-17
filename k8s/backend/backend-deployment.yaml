@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: dev
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -15,56 +14,21 @@ spec:
     spec:
       containers:
       - name: backend
-        image: your-registry/backend:latest
+        image: backend:dev
         ports:
-        - containerPort: 5000
+        - containerPort: 8010
         env:
-        - name: DB_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: app-configmap
-              key: DB_HOST
-        - name: DB_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: app-configmap
-              key: DB_PORT
         - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: DB_USER
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: DB_PASSWORD
+          value: devuser
+        - name: DB_PASS
+          value: devpass123
+        - name: DB_HOST
+          value: postgres
+        - name: DB_PORT
+          value: "5432"
         - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: DB_NAME
+          value: appdb
         - name: NODE_ENV
-          valueFrom:
-            configMapKeyRef:
-              name: app-configmap
-              key: NODE_ENV
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 5000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 5000
-          initialDelaySeconds: 10
-          periodSeconds: 5
+          value: development
+        - name: PORT_DEV
+          value: "8010"

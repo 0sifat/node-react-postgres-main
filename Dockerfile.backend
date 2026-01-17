@@ -1,19 +1,18 @@
-# Dockerfile.backend
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json if exists
+# Copy backend package files
 COPY apiserver/package*.json ./
 
-# Install dependencies
+# Install dependencies (including dotenv)
 RUN npm install --only=production
 
 # Copy backend source code
 COPY apiserver/ ./
 
-# Expose the backend port
+# Expose backend port
 EXPOSE 8010
 
-# Start the backend
+# Start backend
 CMD ["node", "index.js"]
