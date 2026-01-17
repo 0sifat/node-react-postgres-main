@@ -3,17 +3,17 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json first for caching
 COPY apiserver/package*.json ./
 
-# Install dependencies (production only)
+# Install dependencies
 RUN npm ci --only=production
 
 # Copy all backend files
 COPY apiserver ./
 
-# Expose the backend port
+# Expose backend port
 EXPOSE 5000
 
-# Correct entry point
+# Entry point
 CMD ["node", "index.js"]

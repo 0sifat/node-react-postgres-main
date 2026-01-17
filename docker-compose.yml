@@ -18,8 +18,8 @@ services:
 
   backend:
     build:
-      context: ./apiserver
-      dockerfile: ../Dockerfile.backend
+      context: .
+      dockerfile: Dockerfile.backend
     container_name: backend_service
     environment:
       DB_HOST: postgres
