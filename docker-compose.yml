@@ -58,34 +58,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-```
-
-
-```
-
----
-
-## **Task 2 — Kubernetes Deployment**
-
-### Directory Structure:
-```
-k8s/
-├── namespaces/
-│   └── namespace-dev.yaml
-├── backend/
-│   ├── backend-deployment.yaml
-│   └── backend-service.yaml
-├── frontend/
-│   ├── frontend-deployment.yaml
-│   └── frontend-service.yaml
-├── postgres/
-│   ├── postgres-deployment.yaml
-│   ├── postgres-service.yaml
-│   ├── postgres-statefulset.yaml
-│   └── postgres-pvc.yaml
-├── storage/
-│   ├── postgres-pv.yaml
-│   └── postgres-pvc.yaml
-└── config/
-    ├── app-configmap.yaml
-    └── app-secrets.yaml
