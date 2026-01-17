@@ -1,20 +1,18 @@
 # Dockerfile.backend
-# Use official Node.js image
 FROM node:18-alpine
 
-# Set working directory inside container
 WORKDIR /app
 
-# Copy package.json and package-lock.json first
+# Copy package.json and package-lock.json if exists
 COPY apiserver/package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm install --only=production
 
-# Copy the rest of the backend code
+# Copy backend source code
 COPY apiserver/ ./
 
-# Expose backend port
+# Expose the backend port
 EXPOSE 8010
 
 # Start the backend
