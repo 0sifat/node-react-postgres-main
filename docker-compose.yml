@@ -32,11 +32,11 @@ services:
     container_name: backend_service
     restart: always
     env_file:
-      - ./apiserver/.env
+      - ./.env
     depends_on:
       - postgres
     ports:
-      - "8010:8010"
+      - "8010:8010"  # dev port
     volumes:
       - ./apiserver:/app
     networks:
@@ -46,11 +46,11 @@ services:
   # ----------- Frontend Service -----------
   frontend:
     build:
-      context: ./client
-      dockerfile: Dockerfile.frontend   # <-- fixed path relative to context
+      context: .
+      dockerfile: Dockerfile.frontend
     container_name: frontend_service
     environment:
-      REACT_APP_API_URL: http://backend:8010   # Use service name for Docker networking
+      REACT_APP_API_URL: http://backend:8010
     depends_on:
       - backend
     ports:
