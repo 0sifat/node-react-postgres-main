@@ -1,5 +1,12 @@
 version: "3.9"
 
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
 services:
   # ----------- Postgres Database -----------
   postgres:
@@ -29,7 +36,9 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8010:8010"
+      - "8010:8010"  # dev port
+    volumes:
+      - ./apiserver:/app
     networks:
       - app-network
     command: ["node", "index.js"]
@@ -38,7 +47,7 @@ services:
   frontend:
     build:
       context: ./client
-      dockerfile: Dockerfile.frontend
+      dockerfile: ../Dockerfile.frontend   # Correct path to frontend Dockerfile
     container_name: frontend_service
     environment:
       REACT_APP_API_URL: http://backend:8010
@@ -49,12 +58,3 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-
-# ----------- Volumes -----------
-volumes:
-  postgres_data:
-
-# ----------- Networks -----------
-networks:
-  app-network:
-    driver: bridge
