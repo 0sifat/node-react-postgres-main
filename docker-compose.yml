@@ -36,7 +36,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8010:8010"  # dev port
+      - "8010:8010"
     volumes:
       - ./apiserver:/app
     networks:
@@ -47,10 +47,10 @@ services:
   frontend:
     build:
       context: ./client
-      dockerfile: ../Dockerfile.frontend   # Correct path to frontend Dockerfile
+      dockerfile: Dockerfile.frontend   # <-- fixed path relative to context
     container_name: frontend_service
     environment:
-      REACT_APP_API_URL: http://backend:8010
+      REACT_APP_API_URL: http://backend:8010   # Use service name for Docker networking
     depends_on:
       - backend
     ports:
