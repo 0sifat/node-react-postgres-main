@@ -1,19 +1,20 @@
 # Dockerfile.backend
 FROM node:18-alpine
 
+# Set working directory
 WORKDIR /app
 
-# Copy package.json first for caching
-COPY apiserver/package*.json ./
+# Copy package files first for caching
+COPY package*.json ./
 
-# Install dependencies
+# Install dependencies (production only)
 RUN npm ci --only=production
 
 # Copy all backend files
-COPY apiserver ./
+COPY . ./
 
 # Expose backend port
 EXPOSE 5000
 
-# Entry point
+# Start the backend
 CMD ["node", "index.js"]

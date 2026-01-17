@@ -1,12 +1,13 @@
 version: '3.8'
 
 services:
-  # Postgres Database
   postgres:
     image: postgres:15-alpine
     container_name: postgres_db
-    env_file:
-      - .env   # Loads DB_USER, DB_PASSWORD, DB_NAME
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -15,14 +16,18 @@ services:
       - app-network
     restart: unless-stopped
 
-  # Backend API
   backend:
     build:
-      context: ./apiserver
+      context: ./apiserver        # Build context is the backend folder
       dockerfile: ../Dockerfile.backend
     container_name: backend_service
-    env_file:
-      - .env   # Loads DB_USER, DB_PASSWORD, DB_NAME, SESSION_SECRET
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      NODE_ENV: production
     depends_on:
       - postgres
     ports:
@@ -31,7 +36,6 @@ services:
       - app-network
     restart: unless-stopped
 
-  # Frontend React app
   frontend:
     build:
       context: ./client
