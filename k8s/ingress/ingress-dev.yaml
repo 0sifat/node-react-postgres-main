@@ -1,28 +1,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  na127.0.0.1 node-react.localme: app-ingress
-  namespace: dev
+  name: app-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  ingressClassName: nginx
   rules:
-  - host: node-react.local
+  - host: localhost
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: frontend-service
+            name: frontend
             port:
               number: 3000
       - path: /api
         pathType: Prefix
         backend:
           service:
-            name: backend-service
+            name: backend
             port:
-              number: 5000
+              number: 8010
