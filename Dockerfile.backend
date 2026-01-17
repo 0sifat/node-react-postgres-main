@@ -1,18 +1,8 @@
 FROM node:18-alpine
-
 WORKDIR /app
-
-# Copy backend package files
-COPY package*.json ./
-
-# Install dependencies (including dotenv)
+COPY apiserver/package*.json ./
 RUN npm install --only=production
-
-# Copy backend source code
-COPY . .
-
-# Expose backend port
+COPY apiserver/ ./
 EXPOSE 8010
-
-# Start backend
+ENV PORT=8010
 CMD ["node", "index.js"]
