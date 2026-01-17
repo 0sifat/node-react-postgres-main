@@ -60,11 +60,7 @@ networks:
     driver: bridge
 ```
 
-**5. .env file**
-```
-DB_USER=devuser
-DB_PASSWORD=devpass123
-DB_NAME=appdb
+
 ```
 
 ---
