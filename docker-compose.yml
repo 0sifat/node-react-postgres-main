@@ -14,6 +14,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   # ----------- Backend Service -----------
   backend:
@@ -27,9 +29,9 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8010:8010"  # map dev port
-    volumes:
-      - ./apiserver:/app
+      - "8010:8010"
+    networks:
+      - app-network
     command: ["node", "index.js"]
 
   # ----------- Frontend Service -----------
@@ -38,15 +40,21 @@ services:
       context: ./client
       dockerfile: Dockerfile.frontend
     container_name: frontend_service
-    restart: always
+    environment:
+      REACT_APP_API_URL: http://backend:8010
+    depends_on:
+      - backend
     ports:
       - "3000:3000"
-    volumes:
-      - ./client:/app
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    command: ["npm", "start"]
+    networks:
+      - app-network
+    restart: unless-stopped
 
 # ----------- Volumes -----------
 volumes:
   postgres_data:
+
+# ----------- Networks -----------
+networks:
+  app-network:
+    driver: bridge
