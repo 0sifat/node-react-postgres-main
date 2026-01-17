@@ -14,5 +14,5 @@ COPY . .
 # Expose backend port
 EXPOSE 8010
 
-# Start backend
+# Start backends
 CMD ["node", "index.js"]
