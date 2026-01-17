@@ -8,7 +8,6 @@ volumes:
   postgres_data:
 
 services:
-  # ----------- Postgres Database -----------
   postgres:
     image: postgres:15-alpine
     container_name: postgres_service
@@ -24,7 +23,6 @@ services:
     networks:
       - app-network
 
-  # ----------- Backend Service -----------
   backend:
     build:
       context: .
@@ -32,18 +30,14 @@ services:
     container_name: backend_service
     restart: always
     env_file:
-      - ./.env
+      - ./apiserver/.env
     depends_on:
       - postgres
     ports:
-      - "8010:8010"  # dev port
-    volumes:
-      - ./apiserver:/app
+      - "8010:8010"
     networks:
       - app-network
-    command: ["node", "index.js"]
 
-  # ----------- Frontend Service -----------
   frontend:
     build:
       context: .
