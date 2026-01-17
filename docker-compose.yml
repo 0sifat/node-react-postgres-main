@@ -1,59 +1,52 @@
-version: '3.8'
+version: "3.9"
 
 services:
+  # ----------- Postgres Database -----------
   postgres:
     image: postgres:15-alpine
-    container_name: postgres_db
+    container_name: postgres_service
+    restart: always
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass123
+      POSTGRES_DB: appdb
     ports:
       - "5432:5432"
-    networks:
-      - app-network
-    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
+  # ----------- Backend Service -----------
   backend:
     build:
-      context: ./apiserver        # Build context is the backend folder
-      dockerfile: ../Dockerfile.backend
+      context: .
+      dockerfile: Dockerfile.backend
     container_name: backend_service
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      NODE_ENV: production
+    restart: always
+    env_file:
+      - ./apiserver/.env
     depends_on:
       - postgres
     ports:
-      - "5000:5000"
-    networks:
-      - app-network
-    restart: unless-stopped
+      - "8010:8010"  # map dev port
+    volumes:
+      - ./apiserver:/app
+    command: ["node", "index.js"]
 
+  # ----------- Frontend Service -----------
   frontend:
     build:
       context: ./client
-      dockerfile: ../Dockerfile.frontend
+      dockerfile: Dockerfile.frontend
     container_name: frontend_service
-    environment:
-      REACT_APP_API_URL: http://localhost:5000
-    depends_on:
-      - backend
+    restart: always
     ports:
       - "3000:3000"
-    networks:
-      - app-network
-    restart: unless-stopped
+    volumes:
+      - ./client:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: ["npm", "start"]
 
+# ----------- Volumes -----------
 volumes:
   postgres_data:
-
-networks:
-  app-network:
-    driver: bridge
